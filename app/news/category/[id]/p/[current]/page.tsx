@@ -5,20 +5,20 @@ import Pagination from '@/app/_components/Pagination';
 import { NEWS_LIST_LIMIT } from '@/app/_constants';
 
 type Props = {
-  params: {
+  params: Promise<{
     current: string;
     id: string;
-  };
+  }>;
 };
 
 export default async function Page({ params }: Props) {
-  const current = parseInt(params.current as string, 10);
+  const current = parseInt((await params).current as string, 10);
 
   if (Number.isNaN(current) || current < 1) {
     notFound();
   }
 
-  const category = await getCategoryDetail(params.id).catch(notFound);
+  const category = await getCategoryDetail((await params).id).catch(notFound);
 
   const { contents: news, totalCount } = await getNewsList({
     filters: `category[equals]${category.id}`,

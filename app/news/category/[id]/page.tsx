@@ -6,13 +6,13 @@ import Category from '@/app/_components/Category';
 import { NEWS_LIST_LIMIT } from '@/app/_constants';
 
 type Props = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 export default async function Page({ params }: Props) {
-  const category = await getCategoryDetail(params.id).catch(notFound);
+  const category = await getCategoryDetail((await params).id).catch(notFound);
 
   const { contents: news, totalCount } = await getNewsList({
     limit: NEWS_LIST_LIMIT,
